@@ -6,14 +6,13 @@ import java.util.*;
 
 public class CallGraphListener extends Java8BaseListener {
 
-    static String packageName="";
-    static String className="";
-    static String methodName="";
-    static String path="";
-    static String content="";
-    static int counter=0;
-    static List<String> declaredMethods = new  ArrayList<String>();
-    static List<String> invokedMethods = new ArrayList<String>();
+    static String packageName="";   //  keeps the package name
+    static String className="";     //  keeps the class name
+    static String methodName="";    //  keeps the method name
+    static String path="";          //  to keep the path of the declared method
+    static String content="";       // content of dot notation
+    static List<String> declaredMethods = new  ArrayList<String>();     //  list of declared methods
+    static List<String> invokedMethods = new ArrayList<String>();       //  list of invoked methods
     
 public static void main(String[] args) throws Exception {
     ANTLRInputStream input = new ANTLRInputStream(System.in);
@@ -28,12 +27,12 @@ public static void main(String[] args) throws Exception {
 
     StringBuilder buf = new StringBuilder();
     buf.append("digraph G {\n");
-    buf.append("node [style=filled,color=green, shape=circle]\n");
-    buf.append(content);
+    buf.append("node [style=filled,color=green, shape=circle]\n");  //  creates all the nodes in green by default.
+    buf.append(content);    //  appends content of doth notation to buf.
     buf.append("\n");
-    for(int i=0;i<invokedMethods.size();i++){
-        if(!declaredMethods.contains(invokedMethods.get(i))){
-            buf.append(invokedMethods.get(i)+"  [style=solid color=black, shape=circle, ]\n");
+    for(int i=0;i<invokedMethods.size();i++){       
+        if(!declaredMethods.contains(invokedMethods.get(i))){   // checks if an invoked method is not declared. 
+            buf.append(invokedMethods.get(i)+"  [style=solid color=black, shape=circle, ]\n");  // append the line that changes color of the undeclared method to white, to buf.
         }
     }
     buf.append("}");
@@ -46,7 +45,7 @@ public static void main(String[] args) throws Exception {
 
 @Override
 public void enterPackageDeclaration(Java8Parser.PackageDeclarationContext ctx){
-    packageName = ctx.Identifier(0)+"."+ctx.Identifier(1)+"/";
+    packageName = ctx.Identifier(0)+"."+ctx.Identifier(1)+"/";      
 }
 
 @Override
@@ -59,7 +58,7 @@ public void enterNormalClassDeclaration(Java8Parser.NormalClassDeclarationContex
 public void enterMethodDeclarator(Java8Parser.MethodDeclaratorContext ctx){
     methodName = ctx.Identifier()+"";
     String nodeName="\"" + packageName+className+methodName+"\"";
-    declaredMethods.add(nodeName);
+    declaredMethods.add(nodeName);  //  adds declared method to declaredMethods list.
     path = nodeName+"->";
 }
 

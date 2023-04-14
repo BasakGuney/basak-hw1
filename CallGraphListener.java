@@ -64,7 +64,8 @@ public void enterMethodDeclarator(Java8Parser.MethodDeclaratorContext ctx){
 
 @Override
 public void enterMethodBody(Java8Parser.MethodBodyContext ctx){
-    if(!(ctx.getText().contains(";"))){
+     //  to my implemention, program adds the content if a method invoked in the method declaration, 
+    if(!(ctx.getText().contains(";"))){   
         String nodeName="\""+packageName+className+methodName+"\"";
         declaredMethods.add(nodeName);
         content += nodeName + "\n";

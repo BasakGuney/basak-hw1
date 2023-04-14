@@ -6,13 +6,13 @@ import java.util.*;
 
 public class CallGraphListener extends Java8BaseListener {
 
-    static String packageName="";
-    static String className="";
-    static String methodName="";
-    static String path="";
-    static String content="";
-    static List<String> declaredMethods = new  ArrayList<String>();
-    static List<String> invokedMethods = new ArrayList<String>();
+    static String packageName="";   //  keeps the package name.
+    static String className="";     //  keeps the class name.
+    static String methodName="";    //  keeps the method name.
+    static String path="";          //  keeps the path of method declaration.
+    static String content="";       //  keeps the content of dot notation.
+    static List<String> declaredMethods = new  ArrayList<String>();     //  list of declared methods.
+    static List<String> invokedMethods = new ArrayList<String>();       //  list of invoked methods.
     
     public static void main(String[] args) throws Exception {
         ANTLRInputStream input = new ANTLRInputStream(System.in);
@@ -27,12 +27,12 @@ public class CallGraphListener extends Java8BaseListener {
 
         StringBuilder buf = new StringBuilder();
         buf.append("digraph G {\n");
-        buf.append("node [style=filled,color=green, shape=circle]\n");
-        buf.append(content);
+        buf.append("node [style=filled,color=green, shape=circle]\n");  // makes the color of nodes green by default.
+        buf.append(content);        //  append the content of dot notation to buf.
         buf.append("\n");
         for(int i=0;i<invokedMethods.size();i++){
-            if(!declaredMethods.contains(invokedMethods.get(i))){
-                buf.append(invokedMethods.get(i)+"  [style=solid color=black, shape=circle, ]\n");
+            if(!declaredMethods.contains(invokedMethods.get(i))){       //  checks if an invoked method is not declared.
+                buf.append(invokedMethods.get(i)+"  [style=solid color=black, shape=circle, ]\n"); //  appends the line to buf that changes the color of undeclared methods to white. 
             }
         }
         buf.append("}");
@@ -43,22 +43,22 @@ public class CallGraphListener extends Java8BaseListener {
 
     @Override
     public void enterPackageDeclaration(Java8Parser.PackageDeclarationContext ctx){
-        packageName = ctx.Identifier(0)+"."+ctx.Identifier(1)+"/";
+        packageName = ctx.Identifier(0)+"."+ctx.Identifier(1)+"/";  // gets package name from package declaration tokens.
     }
 
     @Override
     public void enterNormalClassDeclaration(Java8Parser.NormalClassDeclarationContext ctx){
-        className = ctx.Identifier()+"/";
+        className = ctx.Identifier()+"/";   //  gets class name from normal class declaration tokens.
     }
 
 
     @Override
     public void enterMethodDeclarator(Java8Parser.MethodDeclaratorContext ctx){
-        methodName = ctx.Identifier()+"";
+        methodName = ctx.Identifier()+"";   //  gets declared method name from method declarator tokens.
         String nodeName="\"" + packageName+className+methodName+"\"";
         declaredMethods.add(nodeName);
         path = nodeName;
-        content+=path+"\n";
+        content+=path+"\n";     // adds declared metod path to content.
     }
 
 
@@ -67,7 +67,7 @@ public class CallGraphListener extends Java8BaseListener {
     public void enterA(Java8Parser.AContext ctx){
         String nodeName="\"" + packageName+className+ctx.methodName().Identifier()+"\"";
         invokedMethods.add(nodeName);
-        content += path+"->"+nodeName+"\n";
+        content += path+"->"+nodeName+"\n";     //  adds line to content that creates an edge between declared method to invoked static class method.
     }
 
 
@@ -75,7 +75,7 @@ public class CallGraphListener extends Java8BaseListener {
     public void enterB(Java8Parser.BContext ctx){
         String nodeName="\"" + packageName+ctx.typeName().Identifier()+"/"+ctx.Identifier()+"\"";
         invokedMethods.add(nodeName);
-        content += path +"->"+ nodeName + "\n";
+        content += path +"->"+ nodeName + "\n";     //  adds line to content that creates an edge between declared method to invoked different class method.
 
     }
 

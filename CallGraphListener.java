@@ -46,7 +46,10 @@ public class CallGraphListener extends Java8BaseListener {
 
     @Override
     public void enterPackageDeclaration(Java8Parser.PackageDeclarationContext ctx){
-        packageName = ctx.Identifier(0)+"."+ctx.Identifier(1)+"/";  // gets package name from package declaration tokens.
+        if(ctx.Identifier(1)!=null)
+            packageName = ctx.Identifier(0)+"."+ctx.Identifier(1)+"/";  // gets package name from package declaration tokens.
+        else
+            packageName = ctx.Identifier(0)+"/";
     }
 
     @Override

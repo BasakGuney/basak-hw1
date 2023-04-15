@@ -28,13 +28,16 @@ public class CallGraphListener extends Java8BaseListener {
         StringBuilder buf = new StringBuilder();
         buf.append("digraph G {\n");
         buf.append("node [style=filled,color=green, shape=circle]\n");  // makes the color of nodes green by default.
-        buf.append(content);        //  append the content of dot notation to buf.
-        buf.append("\n");
+        for(int i=0;i<declaredMethods.size();i++){      //appends declared methods to buf.
+            buf.append(declaredMethods.get(i)+"\n");
+        }
         for(int i=0;i<invokedMethods.size();i++){
             if(!declaredMethods.contains(invokedMethods.get(i))){       //  checks if an invoked method is not declared.
                 buf.append(invokedMethods.get(i)+"  [style=solid color=black, shape=circle, ]\n"); //  appends the line to buf that changes the color of undeclared methods to white. 
             }
         }
+        buf.append(content);        //  append the content of dot notation to buf.
+        buf.append("\n");
         buf.append("}");
         System.out.println(buf.toString());
     }
@@ -57,8 +60,7 @@ public class CallGraphListener extends Java8BaseListener {
         methodName = ctx.Identifier()+"";   //  gets declared method name from method declarator tokens.
         String nodeName="\"" + packageName+className+methodName+"\"";
         declaredMethods.add(nodeName);
-        path = nodeName;
-        content+=path+"\n";     // adds declared metod path to content.
+        path = nodeName;  
     }
 
 
